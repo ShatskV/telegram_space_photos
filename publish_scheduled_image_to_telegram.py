@@ -14,9 +14,8 @@ from utils import rm_file
 
 
 def main():
-    photos = glob(images_directory + '*')
     while True:
-        filepath = send_bot_photo(bot_token, chat_id)
+        filepath = send_bot_photo(bot_token, chat_id, images_directory)
         rm_file(filepath)
         photos = glob(images_directory + '*')
         if not photos:
