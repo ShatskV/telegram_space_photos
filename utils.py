@@ -22,6 +22,7 @@ def make_filepath(url, filepath_template):
     if not ext:
         return
     return filepath_template + ext
+        
 
 
 def get_and_save_image_to_disk(image_url, filepath_template, params=None):

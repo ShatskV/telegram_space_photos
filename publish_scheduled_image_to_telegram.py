@@ -14,10 +14,11 @@ from utils import rm_file
 
 
 def main():
+    images_directory_template = '{}*'
     while True:
         filepath = send_bot_photo(bot_token, chat_id, images_directory)
         rm_file(filepath)
-        photos = glob(images_directory + '*')
+        photos = glob(images_directory_template.format(images_directory))
         if not photos:
             fetch_nasa_apod_pictures(NASA_API_URL_BASE, nasa_token, NASA_IMAGE_APOD_FILEPATH_TEMPLATE)
             fetch_nasa_epic_pictures(NASA_API_URL_BASE, nasa_token, NASA_IMAGE_EPIC_FILEPATH_TEMPLATE)

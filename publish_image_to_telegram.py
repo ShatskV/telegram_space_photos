@@ -18,10 +18,13 @@ def parse_filepath_from_terminal():
 
 def send_bot_photo(token, chat_id, images_directory='images/', filepath=None):
     bot = telegram.Bot(token=token)
+    images_directory_template = '{}*'
     if not filepath:
-        photos_list = glob(images_directory + '*')
+        photos_list = glob(images_directory_template.format(images_directory))
         filepath = choice(photos_list)
-    bot.send_photo(chat_id=chat_id, photo=open(filepath, 'rb'))
+    with open(filepath, 'rb') as file:
+        photo = file.read()
+    bot.send_photo(chat_id=chat_id, photo=photo)
     return filepath
 
 
