@@ -1,9 +1,9 @@
 import argparse
-import sys
+import os
 
 import requests
 
-from settings import SPACEX_IMAGE_FILEPATH_TEMPLATE, logger
+from settings import images_directory, logger
 from utils import get_and_save_image_to_disk
 
 
@@ -26,8 +26,9 @@ def parse_launch_id_from_terminal():
     return args.flight_number
 
 
-def fetch_spacex_launch_images(image_filepath_template, flight_number=None):
+def fetch_spacex_last_published_images_from_launch(images_directory, flight_number=None):
     api_url = 'https://api.spacexdata.com/v3/launches'
+    image_filename_template = 'space{}'
     params = {'flight_number': flight_number} if flight_number else None
     try:
         images_urls = get_spacex_links_images(api_url, params=params)
@@ -39,7 +40,7 @@ def fetch_spacex_launch_images(image_filepath_template, flight_number=None):
         return
 
     for num, link in enumerate(images_urls, start=1):
-        filepath_template = image_filepath_template.format(num)
+        filepath_template = os.path.join(images_directory, image_filename_template.format(num))
         try:
             get_and_save_image_to_disk(link, filepath_template)
         except requests.ConnectionError as e:
@@ -52,7 +53,7 @@ def fetch_spacex_launch_images(image_filepath_template, flight_number=None):
 
 def main():
     flight_number = parse_launch_id_from_terminal()
-    fetch_spacex_launch_images(SPACEX_IMAGE_FILEPATH_TEMPLATE, flight_number)
+    fetch_spacex_last_published_images_from_launch(images_directory, flight_number)
 
 
 if __name__ == '__main__':

@@ -1,9 +1,8 @@
-import sys
+import os
 
 import requests
 
-from settings import (NASA_API_URL_BASE, NASA_IMAGE_APOD_FILEPATH_TEMPLATE,
-                      logger, nasa_token)
+from settings import images_directory, logger, nasa_token
 from utils import get_and_save_image_to_disk
 
 
@@ -19,7 +18,9 @@ def get_nasa_apod_pictures_urls(url, params):
     return images_urls
 
 
-def fetch_nasa_apod_pictures(api_url_base, token, image_filepath_template, count=20):
+def fetch_nasa_apod_pictures(token, images_directory, count=20):
+    api_url_base = 'https://api.nasa.gov{route}'
+    image_filename_template = 'nasa_apod_{}'
     params = {'api_key': token,
               'count': count,
               'thumbs': True}
@@ -35,7 +36,7 @@ def fetch_nasa_apod_pictures(api_url_base, token, image_filepath_template, count
         return
    
     for num, url in enumerate(images_urls, start=1):
-        filepath_template = image_filepath_template.format(num)
+        filepath_template = os.path.join(images_directory, image_filename_template.format(num))
         try:
             get_and_save_image_to_disk(url, filepath_template)
         except requests.ConnectionError as e:
@@ -49,7 +50,7 @@ def fetch_nasa_apod_pictures(api_url_base, token, image_filepath_template, count
 
 
 def main():
-    fetch_nasa_apod_pictures(NASA_API_URL_BASE, nasa_token, NASA_IMAGE_APOD_FILEPATH_TEMPLATE)
+    fetch_nasa_apod_pictures(nasa_token, images_directory)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import unquote_plus, urlsplit
 
 import requests
 
@@ -11,24 +12,21 @@ def rm_file(filepath):
         os.remove(filepath)
 
 
-def get_image_from_url(url, params=None):
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    return response.content
-
-
 def make_filepath(url, filepath_template):
-    _, ext = os.path.splitext(url)
+    clear_url = unquote_plus(url)
+    url_parts = urlsplit(clear_url)
+    _, ext = os.path.splitext(url_parts.path)
     if not ext:
         return
-    return filepath_template + ext
+    return f'{filepath_template}{ext}'
         
-
 
 def get_and_save_image_to_disk(image_url, filepath_template, params=None):
     directory = Path(filepath_template).parent
     Path(directory).mkdir(parents=True, exist_ok=True)
-    image = get_image_from_url(image_url, params)
+    response = requests.get(image_url, params=params)
+    response.raise_for_status()
+    image = response.content
     filepath = make_filepath(image_url, filepath_template)    
     if not filepath:
         logger.error(f'url: {image_url} This is not image url')

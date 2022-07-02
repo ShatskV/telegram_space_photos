@@ -19,10 +19,3 @@ log_formatter = logging.Formatter('%(asctime)s - %(filename)s %(funcName)s %(lev
 log_handler = RotatingFileHandler('space_photos.log', maxBytes=1024*1024, backupCount=2)
 log_handler.setFormatter(log_formatter)
 logger.addHandler(log_handler)
-
-SPACEX_IMAGE_FILEPATH_TEMPLATE = f'{images_directory}''space{}'
-
-NASA_IMAGE_APOD_FILEPATH_TEMPLATE = f'{images_directory}''nasa_apod_{}'
-NASA_IMAGE_EPIC_FILEPATH_TEMPLATE= f'{images_directory}''nasa_epic_{}'
-
-NASA_API_URL_BASE = 'https://api.nasa.gov{route}'
